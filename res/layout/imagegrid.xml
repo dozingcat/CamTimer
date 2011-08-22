@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+  <LinearLayout android:layout_weight="1" android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+  	<FrameLayout android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+  	
+  		<com.dozingcatsoftware.cameratimer.PictureView android:id="@+id/gridImageView1"
+    		android:scaleType="centerInside"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent" />
+
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="horizontal"
+			android:layout_weight="1"
+			android:gravity="bottom|center">
+			
+			<Button android:id="@+id/gridDeleteButton1" android:text="@string/gridDeleteButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			<Button android:id="@+id/gridViewButton1" android:text="@string/gridViewButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			
+  		</LinearLayout>
+  	</FrameLayout>
+
+  	<FrameLayout android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+  	
+  		<com.dozingcatsoftware.cameratimer.PictureView android:id="@+id/gridImageView2"
+    		android:scaleType="centerInside"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent" />
+    		
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="horizontal"
+			android:layout_weight="1"
+			android:gravity="bottom|center">
+			
+			<Button android:id="@+id/gridDeleteButton2" android:text="@string/gridDeleteButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			<Button android:id="@+id/gridViewButton2" android:text="@string/gridViewButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			
+		</LinearLayout>
+
+  	</FrameLayout>
+  
+  </LinearLayout>
+
+  <LinearLayout android:layout_weight="1" android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+  	<FrameLayout android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+  	
+  		<com.dozingcatsoftware.cameratimer.PictureView android:id="@+id/gridImageView3"
+    		android:scaleType="centerInside"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent" />
+
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="horizontal"
+			android:layout_weight="1"
+			android:gravity="bottom|center">
+			
+			<Button android:id="@+id/gridDeleteButton3" android:text="@string/gridDeleteButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			<Button android:id="@+id/gridViewButton3" android:text="@string/gridViewButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			
+		</LinearLayout>
+
+  	</FrameLayout>
+
+  	<FrameLayout android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+  	
+  		<com.dozingcatsoftware.cameratimer.PictureView android:id="@+id/gridImageView4"
+    		android:scaleType="centerInside"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent" />
+
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="horizontal"
+			android:layout_weight="1"
+			android:gravity="bottom|center">
+			
+			<Button android:id="@+id/gridDeleteButton4" android:text="@string/gridDeleteButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			<Button android:id="@+id/gridViewButton4" android:text="@string/gridViewButtonLabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+		</LinearLayout>
+  	</FrameLayout>
+  
+  </LinearLayout>
+  
+  
+</LinearLayout>

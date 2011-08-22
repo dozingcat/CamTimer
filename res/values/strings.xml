@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CamTimer</string>
+	<string name="deleteImageButtonLabel">Delete Image</string>
+	<string name="openGalleryButtonLabel">View In Gallery</string>
+	<string name="exitViewImageButtonLabel">Return</string>
+	
+	<string name="gridDeleteButtonLabel">Delete</string>
+	<string name="gridViewButtonLabel">View</string>
+	
+	<string name="singleImageButtonLabel">1 Pic</string>
+	<string name="multiImageButtonLabel">4 Pics</string>
+	
+	<string name="about_text">CamTimer 1.1\n© 2011 Brian Nenninger\nComments and bug reports: bnenning@gmail.com\n\nTouch one of the buttons on the left to take a picture after a 5, 15, or 30 second delay. There will be a series of audible beeps starting 3 seconds before the picture is taken. You can take a picture with no delay by touching the "Now" button.\n\nThe buttons on the right allow you to control camera options as follows:\n1 Pic/4 Pics: Toggle between taking a single picture, or four in succession.\nFlash: Cycle between automatic, on, and off flash settings. Available only on Android 2.1 or later.\nSwitch Camera: Switches between rear and front-facing cameras. Available only on devices with multiple cameras and Android 2.3 or later.\n\nAfter taking a picture, it will be shown with options to delete it, view it in the gallery app, or return to the main screen. When taking 4 pictures, they will all be shown in a grid and you can view and delete individual pictures.\n\nPictures are saved on your SD card in the CamTimer directory.</string>
+	
+</resources>

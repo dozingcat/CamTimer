@@ -1,0 +1,10 @@
+CamTimer is a simple camera timer application for Android devices. It allows you to choose from a 5, 10, or 15 second countdown and takes one or four pictures after the time has elapsed. After you take a picture it will be shown full screen, allowing you to delete it or view it in the Gallery app.
+
+You can also control the camera flash setting, switch to the front-facing camera if available (requires Android 2.3 or later), and take pictures without a delay.
+
+CamTimer is released under version 3 of the GPL; see "COPYING" for the license text.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.

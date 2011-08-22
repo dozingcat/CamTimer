@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   	android:layout_width="fill_parent"
+   	android:layout_height="fill_parent">
+
+	<SurfaceView android:id="@+id/cameraView" 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" />
+
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="vertical">
+		
+			<FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1">
+			
+			<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:id="@+id/statusText"
+				android:gravity="top|center"
+				android:layout_weight="1"
+				/>
+				
+			<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_weight="1"
+				android:gravity="top|right">
+				
+				<Button android:id="@+id/helpButton" android:text="Help"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top"/>				
+				
+			</LinearLayout>
+			
+			</FrameLayout>
+
+			<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_weight="1"
+				android:gravity="bottom|center">
+				
+				<LinearLayout android:id="@+id/pictureButtonBar"
+				    android:layout_width="wrap_content" android:layout_height="fill_parent"
+				    android:gravity="left|bottom" android:orientation="horizontal" android:layout_weight="1">
+				    
+				<Button android:id="@+id/savePictureNowButton" android:text="Now"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+				<Button android:id="@+id/savePicture5SecondsButton" android:text="5 Sec"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+				<Button android:id="@+id/savePicture15SecondsButton" android:text="15 Sec"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+				<Button android:id="@+id/savePicture30SecondsButton" android:text="30 Sec"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" />
+					
+				</LinearLayout>
+
+				<LinearLayout android:id="@+id/optionsButtonBar"
+				    android:layout_width="wrap_content" android:layout_height="fill_parent"
+				    android:gravity="right|bottom" android:orientation="horizontal" android:layout_weight="1">
+				    
+				    <Button android:id="@+id/numberOfPicturesButton" android:text="@string/singleImageButtonLabel"
+				    	android:layout_width="wrap_content" android:layout_height="wrap_content" />
+				    
+					<Button android:id="@+id/flashButton" android:text="Flash" android:visibility="gone"
+						android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+					<Button android:id="@+id/switchCameraButton" android:text="Switch Camera" android:visibility="gone"
+						android:layout_width="wrap_content" android:layout_height="wrap_content" />
+						
+				</LinearLayout>
+
+				<Button android:id="@+id/cancelPictureButton" android:text="Cancel Picture" android:visibility="gone"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+			</LinearLayout>
+		
+		</LinearLayout>
+				                  
+		
+</FrameLayout>
