@@ -11,6 +11,8 @@ public class ARManager implements SurfaceHolder.Callback {
 	SurfaceView cameraView;
 	Camera.PreviewCallback previewCallback;
 	Runnable cameraOpenedCallback;
+	Runnable cameraStartedCallback;
+	boolean cameraInitialized = false;
 	
 	Camera camera;
 	boolean cameraViewReady = false;
@@ -49,11 +51,15 @@ public class ARManager implements SurfaceHolder.Callback {
 		cameraOpenedCallback = callback;
 	}
 	
+	public void setCameraStartedCallback(Runnable callback) {
+		cameraStartedCallback = callback;
+	}
+	
 	public boolean startCamera() {
 		if (camera==null) {
 			try {
 	            camera = CameraUtils.openCamera(cameraId);
-	            if (cameraOpenedCallback!=null) {
+	            if (!cameraInitialized && cameraOpenedCallback!=null) {
 	            	cameraOpenedCallback.run();
 	            }
 	            camera.setPreviewDisplay(cameraView.getHolder());
@@ -69,6 +75,10 @@ public class ARManager implements SurfaceHolder.Callback {
 		            camera.setPreviewCallback(this.previewCallback);
 	            }
 	            camera.startPreview();
+	            if (!cameraInitialized && cameraStartedCallback!=null) {
+	            	cameraStartedCallback.run();
+	            }
+	            cameraInitialized = true;
 			}
 			catch(Exception ex) {
 				camera = null;

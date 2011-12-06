@@ -22,10 +22,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.hardware.Camera;
@@ -77,6 +79,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	cameraView = (SurfaceView)findViewById(R.id.cameraView);
     	arManager = ARManager.createAndSetupCameraView(this, cameraView, null);
     	arManager.setCameraOpenedCallback(new Runnable() {public void run() {cameraOpened();}});
+    	arManager.setCameraStartedCallback(new Runnable() {public void run() {cameraPreviewStarted();}});
     	
     	pictureNowButton = (Button)findViewById(R.id.savePictureNowButton);
     	picture5SecondsButton = (Button)findViewById(R.id.savePicture5SecondsButton);
@@ -143,6 +146,12 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     		configureFlashButton();
     		flashButtonConfigured = true;
     	}
+    }
+    
+    public void cameraPreviewStarted() {
+    	// resize camera view to actual size of preview image (TODO: scale if needed)
+    	Camera.Size size = arManager.getCamera().getParameters().getPreviewSize();
+    	cameraView.setLayoutParams(new FrameLayout.LayoutParams(size.width, size.height, Gravity.CENTER));
     }
     
     void updateButtons(boolean allowSave) {
@@ -340,5 +349,9 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 			return null;
 		}
 	}
-
+/*
+	public void openLibrary(View view) {
+		startActivity(LibraryActivity.intentWithImageDirectory(this, savedImageDirectory));
+	}
+	*/
 }
