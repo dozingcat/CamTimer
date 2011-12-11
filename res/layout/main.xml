@@ -19,12 +19,15 @@
 				/>
 				
 			<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:orientation="horizontal"
+				android:orientation="vertical"
 				android:layout_weight="1"
 				android:gravity="top|right">
 				
 				<Button android:id="@+id/helpButton" android:text="Help"
-					android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top"/>				
+					android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"/>				
+				
+				<Button android:text="Library" android:onClick="openLibrary"
+					android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"/>				
 				
 			</LinearLayout>
 			
