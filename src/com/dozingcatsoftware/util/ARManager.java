@@ -108,6 +108,7 @@ public class ARManager implements SurfaceHolder.Callback {
     		stopCamera();
     	}
     	this.cameraId = _cameraId;
+    	this.cameraInitialized = false;
     	startCameraIfVisible();
     }
 

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.dozingcatsoftware.cameratimer.R;
@@ -16,32 +17,41 @@ import com.dozingcatsoftware.util.AndroidUtils;
 import com.dozingcatsoftware.util.CameraUtils;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.hardware.Camera;
 
 public class MainActivity extends Activity implements Camera.PictureCallback, Camera.AutoFocusCallback {
 	
+	static List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30);
+	static int DEFAULT_DELAY = 5;
+	static String DELAY_PREFERENCES_KEY = "delay";
+	int pictureDelay = DEFAULT_DELAY;
+	
 	ARManager arManager;
 	SurfaceView cameraView;
+	int[] maxCameraViewSize;
 	
-	Button pictureNowButton, picture5SecondsButton, picture15SecondsButton, picture30SecondsButton;
+	ImageButton takePictureButton;
+	Button pictureDelayButton;
 	Button cancelPictureButton;
 	Button switchCameraButton;
 	Button flashButton;
-	Button helpButton;
 	Button numberOfPicturesButton;
 	TextView statusTextField;
 	
@@ -81,14 +91,11 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	arManager.setCameraOpenedCallback(new Runnable() {public void run() {cameraOpened();}});
     	arManager.setCameraStartedCallback(new Runnable() {public void run() {cameraPreviewStarted();}});
     	
-    	pictureNowButton = (Button)findViewById(R.id.savePictureNowButton);
-    	picture5SecondsButton = (Button)findViewById(R.id.savePicture5SecondsButton);
-    	picture15SecondsButton = (Button)findViewById(R.id.savePicture15SecondsButton);
-    	picture30SecondsButton = (Button)findViewById(R.id.savePicture30SecondsButton);
+    	takePictureButton = (ImageButton)findViewById(R.id.takePictureButton);
+    	pictureDelayButton = (Button)findViewById(R.id.pictureDelayButton);
     	
     	cancelPictureButton = (Button)findViewById(R.id.cancelPictureButton);
     	flashButton = (Button)findViewById(R.id.flashButton);
-    	helpButton = (Button)findViewById(R.id.helpButton);
     	numberOfPicturesButton = (Button)findViewById(R.id.numberOfPicturesButton);
     	
     	switchCameraButton = (Button)findViewById(R.id.switchCameraButton);
@@ -97,29 +104,17 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	
     	statusTextField = (TextView)findViewById(R.id.statusText);
     	
-    	//pictureView = (PictureView)findViewById(R.id.pictureView);
-    	
-    	AndroidUtils.bindOnClickListener(this, pictureNowButton, "savePictureNow");
-    	AndroidUtils.bindOnClickListener(this, picture5SecondsButton, "savePicture5Seconds");
-    	AndroidUtils.bindOnClickListener(this, picture15SecondsButton, "savePicture15Seconds");
-    	AndroidUtils.bindOnClickListener(this, picture30SecondsButton, "savePicture30Seconds");
+    	AndroidUtils.bindOnClickListener(this, takePictureButton, "savePicture");
+    	AndroidUtils.bindOnClickListener(this, pictureDelayButton, "cycleDelay");
     	AndroidUtils.bindOnClickListener(this, cancelPictureButton, "cancelSavePicture");
     	AndroidUtils.bindOnClickListener(this, switchCameraButton, "switchCamera");
     	AndroidUtils.bindOnClickListener(this, flashButton, "cycleFlashMode");
-    	AndroidUtils.bindOnClickListener(this, helpButton, "doHelp");
     	AndroidUtils.bindOnClickListener(this, numberOfPicturesButton, "toggleNumberOfPictures");
+    	AndroidUtils.bindOnClickListener(this, findViewById(R.id.helpButton), "doHelp");
+    	AndroidUtils.bindOnClickListener(this, findViewById(R.id.libraryButton), "openLibrary");
     	
     	this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    	/*
-    	pictureView.setOnTouchListener(new View.OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction()==MotionEvent.ACTION_DOWN && pictureView.isPointInCornerImage(event.getX(), event.getY())) {
-					showPicture();
-				}
-				return true;
-			}
-    	});
-    	*/
+    	this.readDelayPreference();
     }
 
     @Override
@@ -139,7 +134,10 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     
     // callback from ARManager
     public void cameraOpened() {
-    	arManager.setPreferredPreviewSize(cameraView.getWidth(), cameraView.getHeight());
+    	if (maxCameraViewSize==null) {
+    		maxCameraViewSize = new int[] {cameraView.getWidth(), cameraView.getHeight()};
+    	}
+    	arManager.setPreferredPreviewSize(maxCameraViewSize[0], maxCameraViewSize[1]);
     	CameraUtils.setLargestCameraSize(arManager.getCamera());
     	//statusTextField.setText(arManager.getCamera().getParameters().getPictureSize().width+"");
     	if (!flashButtonConfigured) {
@@ -149,14 +147,17 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     }
     
     public void cameraPreviewStarted() {
-    	// resize camera view to actual size of preview image (TODO: scale if needed)
+    	// resize camera view to scaled size of preview image
     	Camera.Size size = arManager.getCamera().getParameters().getPreviewSize();
-    	cameraView.setLayoutParams(new FrameLayout.LayoutParams(size.width, size.height, Gravity.CENTER));
+    	int[] scaledWH = AndroidUtils.scaledWidthAndHeightToMaximum(
+    			size.width, size.height, maxCameraViewSize[0], maxCameraViewSize[1]);
+    	cameraView.setLayoutParams(new FrameLayout.LayoutParams(scaledWH[0], scaledWH[1], Gravity.CENTER));
     }
     
     void updateButtons(boolean allowSave) {
-    	this.findViewById(R.id.pictureButtonBar).setVisibility(allowSave ? View.VISIBLE : View.GONE);
+    	this.findViewById(R.id.miscButtonBar).setVisibility(allowSave ? View.VISIBLE : View.GONE);
     	this.findViewById(R.id.optionsButtonBar).setVisibility(allowSave ? View.VISIBLE : View.GONE);
+    	takePictureButton.setVisibility(allowSave ? View.VISIBLE : View.GONE);
 		cancelPictureButton.setVisibility(allowSave ? View.GONE : View.VISIBLE);
     }
     
@@ -208,6 +209,15 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	}
     }
     
+    public void savePicture() {
+    	if (this.pictureDelay==0) {
+    		savePictureNow();
+    	}
+    	else {
+        	savePictureAfterDelay(this.pictureDelay);
+    	}
+    }
+    
     void savePictureAfterDelay(int delay) {
     	pictureTimer = delay;
     	updateTimerMessage();
@@ -216,18 +226,6 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 		//beepType = RAND.nextInt(numBeepTypes);
 		
 		updateButtons(false);
-    }
-    
-    public void savePicture5Seconds() {
-    	savePictureAfterDelay(5);
-    }
-    
-    public void savePicture15Seconds() {
-    	savePictureAfterDelay(15);
-    }
-    
-    public void savePicture30Seconds() {
-    	savePictureAfterDelay(30);
     }
     
     public void savePictureNow() {
@@ -261,6 +259,41 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	else {
     		flashButton.setVisibility(View.GONE);
     	}
+    }
+    
+    public void cycleDelay() {
+    	int index = DELAY_DURATIONS.indexOf(this.pictureDelay);
+    	if (index<0) {
+    		this.pictureDelay = DEFAULT_DELAY;
+    	}
+    	else {
+    		this.pictureDelay = DELAY_DURATIONS.get((index+1) % DELAY_DURATIONS.size());
+    	}
+    	writeDelayPreference();
+    	updateDelayButton();
+    }
+    
+    void writeDelayPreference() {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    	SharedPreferences.Editor editor = prefs.edit();
+    	editor.putInt(DELAY_PREFERENCES_KEY, this.pictureDelay);
+    	editor.commit();
+    }
+    
+    void readDelayPreference() {
+    	// reads picture delay from preferences, updates this.pictureDelay and delay button text
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    	int delay = prefs.getInt(DELAY_PREFERENCES_KEY, -1);
+    	if (!DELAY_DURATIONS.contains(delay)) {
+    		delay = DEFAULT_DELAY;
+    	}
+    	this.pictureDelay = delay;
+    	updateDelayButton();
+    }
+    
+    void updateDelayButton() {
+    	String durationText = (this.pictureDelay==0) ? "None" : (this.pictureDelay + " Sec");
+    	pictureDelayButton.setText("Delay: " + durationText);
     }
     
     public void cycleFlashMode() {
@@ -317,7 +350,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 	}
 	
 	String savedImageDirectory = Environment.getExternalStorageDirectory() + File.separator + "CamTimer";
-	Format dateInFilename = new SimpleDateFormat("yyyyMMDD_HHmmss");
+	Format dateInFilename = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	
 	Uri saveImageData(byte[] data, int pictureNum) {
 		try {
@@ -349,9 +382,9 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 			return null;
 		}
 	}
-/*
-	public void openLibrary(View view) {
+
+	public void openLibrary() {
 		startActivity(LibraryActivity.intentWithImageDirectory(this, savedImageDirectory));
 	}
-	*/
+	
 }

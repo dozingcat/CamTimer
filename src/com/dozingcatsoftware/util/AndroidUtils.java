@@ -91,4 +91,35 @@ public class AndroidUtils {
 		
 		return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(imageURI), null, options);		
 	}
+	
+	/** Given a width and height, fills output array with scaled width and height values 
+	 * such that one of the values is exactly equal to the given maximum width or height, 
+	 * and the other value is less than or equal to the maximum.
+	 */
+	public static void getScaledWidthAndHeightToMaximum(
+			int width, int height, int maxWidth, int maxHeight, int[] output) {
+		output[0] = width;
+		output[1] = height;
+		// common cases: if one dimension fits exactly and the other is smaller, return unmodified
+		if (width==maxWidth && height<=maxHeight) return;
+		if (height==maxHeight && width<=maxWidth) return;
+		float wratio = ((float)width)/maxWidth;
+		float hratio = ((float)height)/maxHeight;
+		if (wratio<=hratio) {
+			// scale to full height, partial width
+			output[0] = (int)(width/hratio);
+			output[1] = maxHeight;
+		}
+		else {
+			// scale to full width, partial height
+			output[0] = maxWidth;
+			output[1] = (int)(height/wratio);
+		}
+	}
+	
+	public static int[] scaledWidthAndHeightToMaximum(int width, int height, int maxWidth, int maxHeight) {
+		int[] output = new int[2];
+		getScaledWidthAndHeightToMaximum(width, height, maxWidth, maxHeight, output);
+		return output;
+	}
 }

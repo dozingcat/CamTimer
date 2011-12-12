@@ -17,7 +17,7 @@
 		<Button android:id="@+id/deleteImageButton" android:text="@string/deleteImageButtonLabel"
 			android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
-		<Button android:id="@+id/openGalleryButton" android:text="@string/openGalleryButtonLabel" 
+		<Button android:id="@+id/shareImageButton" android:text="@string/shareImageButtonLabel" 
 			android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
 		<Button android:id="@+id/exitViewImageButton" android:text="@string/exitViewImageButtonLabel"

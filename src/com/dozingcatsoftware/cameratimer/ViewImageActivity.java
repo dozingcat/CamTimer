@@ -16,8 +16,18 @@ import android.widget.ImageView;
 
 public class ViewImageActivity extends Activity {
 	
+	public static final int DELETE_RESULT = Activity.RESULT_FIRST_USER;
+	
 	ImageView imageView;
+	Uri imageUri;
 
+    public static Intent startActivityWithImageURI(Activity parent, Uri imageURI, String type) {
+    	Intent intent = new Intent(parent, ViewImageActivity.class);
+    	intent.setDataAndType(imageURI, type);
+    	parent.startActivityForResult(intent, 0);
+    	return intent;
+    }
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,25 +36,20 @@ public class ViewImageActivity extends Activity {
         setContentView(R.layout.imageview);
         
         imageView = (ImageView)findViewById(R.id.imageView);
+        imageUri = getIntent().getData();
         
         // assume full screen, there's no good way to get notified once layout happens and views have nonzero width/height
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         try {
-        	imageView.setImageBitmap(AndroidUtils.scaledBitmapFromURIWithMinimumSize(this, this.getIntent().getData(), dm.widthPixels, dm.heightPixels));
+        	imageView.setImageBitmap(AndroidUtils.scaledBitmapFromURIWithMinimumSize(this, imageUri, 
+        			dm.widthPixels, dm.heightPixels));
         }
         catch(Exception ex) {}
         
         AndroidUtils.bindOnClickListener(this, this.findViewById(R.id.deleteImageButton), "deleteImage");
-        AndroidUtils.bindOnClickListener(this, this.findViewById(R.id.openGalleryButton), "viewImageInGallery");
+        AndroidUtils.bindOnClickListener(this, this.findViewById(R.id.shareImageButton), "shareImage");
         AndroidUtils.bindOnClickListener(this, this.findViewById(R.id.exitViewImageButton), "goBack");
-    }
-    
-    public static Intent startActivityWithImageURI(Context parent, Uri imageURI, String type) {
-    	Intent intent = new Intent(parent, ViewImageActivity.class);
-    	intent.setDataAndType(imageURI, type);
-    	parent.startActivity(intent);
-    	return intent;
     }
     
     public void goBack() {
@@ -54,7 +59,16 @@ public class ViewImageActivity extends Activity {
     public void deleteImage() {
     	String path = this.getIntent().getData().getPath();
     	(new File(path)).delete();
+    	this.setResult(DELETE_RESULT);
     	this.finish();
+    }
+    
+    public void shareImage() {
+		Intent shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType(this.getIntent().getType());
+		shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+		shareIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		startActivity(Intent.createChooser(shareIntent, "Share Picture Using:"));
     }
     
     // launch gallery and terminate this activity, so when gallery activity finishes user will go back to main activity

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.dozingcatsoftware.util.AndroidUtils;
 
@@ -21,6 +22,8 @@ public class ViewImageGridActivity extends Activity {
 	List<PictureView> imageViews;
 	List<View> deleteButtons;
 	List<View> viewButtons;
+	
+	int viewImageIndex;
 
     /** Called when the activity is first created. */
     @Override
@@ -61,11 +64,8 @@ public class ViewImageGridActivity extends Activity {
 
     // launch gallery and terminate this activity, so when gallery activity finishes user will go back to main activity
     public void viewImageInGallery(int imageNum) {
-    	Intent galleryIntent = new Intent(Intent.ACTION_VIEW);
-    	galleryIntent.setDataAndType(imageURIs.get(imageNum), "image/jpeg");
-    	// FLAG_ACTIVITY_NO_HISTORY tells the OS to not return to the gallery if the user goes to the home screen and relaunches the app
-    	galleryIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-    	this.startActivity(galleryIntent);
+    	viewImageIndex = imageNum; // so we know which image to delete if needed
+    	ViewImageActivity.startActivityWithImageURI(this, imageURIs.get(imageNum), "image/jpeg");
     }
     
     public void viewImage0() {viewImageInGallery(0);}
@@ -98,4 +98,11 @@ public class ViewImageGridActivity extends Activity {
     public void deleteImage2() {deleteImage(2);}
     public void deleteImage3() {deleteImage(3);}
     
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode==ViewImageActivity.DELETE_RESULT) {
+			deleteImage(viewImageIndex);
+		}
+	}
+
 }
