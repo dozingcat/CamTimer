@@ -103,8 +103,6 @@ public class LibraryActivity extends Activity {
 		// show text message if no images available
 		View noImagesView = findViewById(R.id.noImagesTextView);
 		noImagesView.setVisibility(imageMaps.size()>0 ? View.GONE : View.VISIBLE);
-		
-		System.gc(); // seems to avoid OutOfMemoryErrors when selecting image after deleting earlier image
 	}
 	
 	@Override

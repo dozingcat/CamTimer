@@ -15,12 +15,10 @@
 			<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:id="@+id/statusText"
 				android:gravity="top|center"
-				android:layout_weight="1"
 				/>
 				
 			<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:layout_weight="1"
 				android:gravity="top|left">
 				
 				<ImageButton android:id="@+id/takePictureButton" 
@@ -40,10 +38,10 @@
 			    android:layout_width="wrap_content" android:layout_height="fill_parent"
 			    android:gravity="left|bottom" android:orientation="horizontal" android:layout_weight="1">
 
-				<Button android:id="@+id/helpButton" android:text="Help"
+				<Button android:id="@+id/helpButton" android:text="@string/helpButtonLabel"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />				
 				
-				<Button android:id="@+id/libraryButton" android:text="Library"
+				<Button android:id="@+id/libraryButton" android:text="@string/libraryButtonLabel"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />				
 				
 			</LinearLayout>
@@ -52,21 +50,21 @@
 			    android:layout_width="wrap_content" android:layout_height="fill_parent"
 			    android:gravity="right|bottom" android:orientation="horizontal" android:layout_weight="1">
 				    
-				<Button android:id="@+id/pictureDelayButton" android:text="Delay: 5 Sec"
+				<Button android:id="@+id/pictureDelayButton" android:text="@string/defaultDelayButtonLabel"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />
 					
 			    <Button android:id="@+id/numberOfPicturesButton" android:text="@string/singleImageButtonLabel"
 			    	android:layout_width="wrap_content" android:layout_height="wrap_content" />
 				    
-				<Button android:id="@+id/flashButton" android:text="Flash" android:visibility="gone"
+				<Button android:id="@+id/flashButton" android:text="@string/flashButtonDefaultLabel" android:visibility="gone"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
-				<Button android:id="@+id/switchCameraButton" android:text="Switch Camera" android:visibility="gone"
+				<Button android:id="@+id/switchCameraButton" android:text="@string/switchCameraButtonLabel" android:visibility="gone"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />
 						
 			</LinearLayout>
 
-			<Button android:id="@+id/cancelPictureButton" android:text="Cancel Picture" android:visibility="gone"
+			<Button android:id="@+id/cancelPictureButton" android:text="@string/cancelPictureButtonLabel" android:visibility="gone"
 				android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
 		</LinearLayout>

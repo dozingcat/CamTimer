@@ -7,7 +7,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dozingcatsoftware.cameratimer.R;
 import com.dozingcatsoftware.cameratimer.AboutActivity;
@@ -38,10 +40,16 @@ import android.hardware.Camera;
 
 public class MainActivity extends Activity implements Camera.PictureCallback, Camera.AutoFocusCallback {
 	
-	static List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30);
-	static int DEFAULT_DELAY = 5;
-	static String DELAY_PREFERENCES_KEY = "delay";
+	static final List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30);
+	static final int DEFAULT_DELAY = 5;
+	static final String DELAY_PREFERENCES_KEY = "delay";
 	int pictureDelay = DEFAULT_DELAY;
+	
+	static final String FLASH_MODE_AUTO = "auto";
+	static final String FLASH_MODE_ON = "on";
+	static final String FLASH_MODE_OFF = "off";
+	
+	Map<String, String> flashButtonLabels = new HashMap<String, String>();
 	
 	ARManager arManager;
 	SurfaceView cameraView;
@@ -85,6 +93,10 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
     	setContentView(R.layout.main);
+    	
+		flashButtonLabels.put(FLASH_MODE_AUTO, getString(R.string.flashButtonAutoLabel));
+		flashButtonLabels.put(FLASH_MODE_ON, getString(R.string.flashButtonOnLabel));
+		flashButtonLabels.put(FLASH_MODE_OFF, getString(R.string.flashButtonOffLabel));
     	
     	cameraView = (SurfaceView)findViewById(R.id.cameraView);
     	arManager = ARManager.createAndSetupCameraView(this, cameraView, null);
@@ -165,12 +177,13 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	pictureTimer = 0;
     	++currentPictureID;
     	statusTextField.setText("");
-    	Toast.makeText(this, "Canceled picture", Toast.LENGTH_SHORT).show();
+    	Toast.makeText(this, getString(R.string.canceledPictureMessage), Toast.LENGTH_SHORT).show();
     	updateButtons(true);
     }
     
     void updateTimerMessage() {
-    	statusTextField.setText("Taking picture in " + pictureTimer);
+    	String messageFormat = getString(R.string.timerCountdownMessageFormat);
+    	statusTextField.setText(String.format(messageFormat, pictureTimer));
     }
     
     Runnable makeDecrementTimerFunction(final int pictureID) {
@@ -243,17 +256,17 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	flashModes.clear();
     	if (CameraUtils.cameraSupportsFlash(arManager.getCamera())) {
     		if (CameraUtils.cameraSupportsAutoFlash(arManager.getCamera())) {
-    			flashModes.add("auto");
+    			flashModes.add(FLASH_MODE_AUTO);
     		}
-    		flashModes.add("off");
-    		flashModes.add("on");
+    		flashModes.add(FLASH_MODE_OFF);
+    		flashModes.add(FLASH_MODE_ON);
     	}
     	
     	if (flashModes.size() > 0) {
     		flashButton.setVisibility(View.VISIBLE);
     		updateFlashMode(0);
     		String mode = flashModes.get(selectedFlashMode);
-    		flashButton.setText("Flash: " + mode.substring(0,1).toUpperCase() + mode.substring(1));
+    		flashButton.setText(flashButtonLabels.get(mode));
     		CameraUtils.setFlashMode(arManager.getCamera(), mode);
     	}
     	else {
@@ -292,8 +305,13 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     }
     
     void updateDelayButton() {
-    	String durationText = (this.pictureDelay==0) ? "None" : (this.pictureDelay + " Sec");
-    	pictureDelayButton.setText("Delay: " + durationText);
+    	if (pictureDelay==0) {
+    		pictureDelayButton.setText(getString(R.string.delayButtonLabelNone));
+    	}
+    	else {
+        	String labelFormat = getString(R.string.delayButtonLabelSecondsFormat);
+        	pictureDelayButton.setText(String.format(labelFormat, this.pictureDelay));
+    	}
     }
     
     public void cycleFlashMode() {
@@ -325,7 +343,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 	}
 
 	@Override
-	public void onPictureTaken(byte[] data, Camera camera) {
+	public void onPictureTaken(byte[] data, final Camera camera) {
 		int pictureNum = (picturesToTake > 1) ? pictureURIs.size() + 1 : 0;
 		pictureURI = saveImageData(data, pictureNum);
 		statusTextField.setText("");
@@ -339,12 +357,16 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 					ViewImageActivity.startActivityWithImageURI(this, pictureURI, "image/jpeg");
 				}
 				else {
-					// todo: start image grid activity with pictureURIs
 					ViewImageGridActivity.startActivityWithImageURIs(this, pictureURIs);
 				}
 			}
 			else {
-				camera.takePicture(null, null, this);
+				// OG Droid and possibly other phones often hang if we call takePicture directly instead of autoFocus
+				handler.postDelayed(new Runnable() {
+					public void run() {
+						camera.autoFocus(MainActivity.this);
+					}
+				}, 100);
 			}
 		}
 	}
@@ -372,8 +394,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 			out.close();
 			
 			AndroidUtils.scanSavedMediaFile(this, path);
-			String toastMessage = "Saved picture";
-			Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.savedPictureMessage), Toast.LENGTH_SHORT).show();
 			
 			return Uri.fromFile(new File(path));
 		}
