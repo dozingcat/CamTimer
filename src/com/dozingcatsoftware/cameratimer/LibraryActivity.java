@@ -33,7 +33,6 @@ public class LibraryActivity extends Activity {
 	
 	List imageMaps = new ArrayList();
 	static String IMAGE_URI_KEY = "imageUri";
-	static String IMAGE_FILENAME_KEY = "imageFilename";
 	
 	// A cache of scaled Bitmaps for the image files, so we can avoid reloading them as the user scrolls.
 	ScaledBitmapCache bitmapCache;
@@ -50,7 +49,7 @@ public class LibraryActivity extends Activity {
 		setContentView(R.layout.library_list);
 		
 		imageDirectory = getIntent().getStringExtra("imageDirectory");
-		bitmapCache = new ScaledBitmapCache(this, imageDirectory);
+		bitmapCache = new ScaledBitmapCache(this, imageDirectory + File.separator + "thumbnails2");
 		
 		gridView = (GridView) findViewById(R.id.gridview);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
@@ -79,7 +78,6 @@ public class LibraryActivity extends Activity {
 				Uri imageUri = Uri.fromFile(new File(imageDirectory + File.separator + fname));
 				Map dmap = new HashMap();
 				dmap.put(IMAGE_URI_KEY, imageUri);
-				dmap.put(IMAGE_FILENAME_KEY, fname);
 				imageMaps.add(dmap);
 			}
 		}
@@ -88,12 +86,12 @@ public class LibraryActivity extends Activity {
 	void displayGrid() {
 		SimpleAdapter adapter = new SimpleAdapter(this, imageMaps, 
 				R.layout.library_cell, 
-				new String[] {IMAGE_FILENAME_KEY}, 
+				new String[] {IMAGE_URI_KEY}, 
 				new int[] {R.id.grid_image});
 		adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
 			public boolean setViewValue(View view, Object data, String textRepresentation) {
-				String filename = (String)data;
-				Bitmap bitmap = bitmapCache.getScaledBitmap(filename, CELL_WIDTH, CELL_HEIGHT);
+				Uri imageUri = (Uri)data;
+				Bitmap bitmap = bitmapCache.getScaledBitmap(imageUri, CELL_WIDTH, CELL_HEIGHT);
 				((ImageView)view).setImageBitmap(bitmap);
 				return true;
 			}
@@ -108,7 +106,7 @@ public class LibraryActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode==ViewImageActivity.DELETE_RESULT) {
-			bitmapCache.removeFilename((String)((Map)imageMaps.get(selectedGridIndex)).get(IMAGE_FILENAME_KEY));
+			bitmapCache.removeUri((Uri)((Map)imageMaps.get(selectedGridIndex)).get(IMAGE_URI_KEY));
 			imageMaps.remove(selectedGridIndex);
 			displayGrid();
 		}
