@@ -16,8 +16,9 @@ import android.net.Uri;
 
 /** This class implements a two-level cache for Bitmaps. The first level is an in-memory map
  * which uses SoftReferences so that the Bitmaps will be freed when necessary. The second
- * level is a thumbnails directory on the SD card, where smaller versions of the images
- * will be saved for faster retrieval.
+ * level is a location directory on the SD card, where smaller versions of the images
+ * will be saved for faster retrieval. The exact location is determined by the ThumbnailLocator
+ * implementation passed to the constructor.
  */
 
 public class ScaledBitmapCache {
@@ -26,6 +27,7 @@ public class ScaledBitmapCache {
 		File thumbnailFileForUri(Uri imageUri);
 	}
 	
+	// Simple ThumbnailLocator for putting thumbnails into a single directory using the image URI's filename.
 	static class FixedDirectoryLocator implements ThumbnailLocator {
 		String thumbnailDirectory;
 		

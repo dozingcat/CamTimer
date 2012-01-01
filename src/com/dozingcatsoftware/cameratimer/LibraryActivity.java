@@ -49,7 +49,7 @@ public class LibraryActivity extends Activity {
 		setContentView(R.layout.library_list);
 		
 		imageDirectory = getIntent().getStringExtra("imageDirectory");
-		bitmapCache = new ScaledBitmapCache(this, imageDirectory + File.separator + "thumbnails2");
+		bitmapCache = new ScaledBitmapCache(this, imageDirectory + File.separator + "thumbnails");
 		
 		gridView = (GridView) findViewById(R.id.gridview);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
