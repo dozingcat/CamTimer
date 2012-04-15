@@ -1,6 +1,7 @@
 package com.dozingcatsoftware.util;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import android.content.Context;
@@ -122,4 +123,36 @@ public class AndroidUtils {
 		getScaledWidthAndHeightToMaximum(width, height, maxWidth, maxHeight, output);
 		return output;
 	}
+
+    /** On API level 14 (ICS) or higher, calls view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE)
+     * and returns true. On earlier API versions, does nothing and returns false.
+     */
+    public static boolean setSystemUiLowProfile(View view) {
+        return setSystemUiVisibility(view, "SYSTEM_UI_FLAG_LOW_PROFILE");
+    }
+    
+    static boolean setSystemUiVisibility(View view, String flagName) {
+        try {
+            Method setUiMethod = View.class.getMethod("setSystemUiVisibility", int.class);
+            Field flagField = View.class.getField(flagName);
+            setUiMethod.invoke(view, flagField.get(null));
+            return true;
+        }
+        catch(Exception ex) {
+            return false;
+        }
+    }
+    
+    /** Returns the estimated memory usage in bytes for a bitmap. Calls bitmap.getByteCount() if that method
+     * is available (in API level 12 or higher), otherwise returns 4 times the number of pixels in the bitmap.
+     */
+    public static int getBitmapByteCount(Bitmap bitmap) {
+        try {
+            Method byteCountMethod = Bitmap.class.getMethod("getByteCount");
+            return (Integer)byteCountMethod.invoke(bitmap);
+        }
+        catch(Exception ex) {
+            return 4 * bitmap.getWidth() * bitmap.getHeight();
+        }
+    }
 }

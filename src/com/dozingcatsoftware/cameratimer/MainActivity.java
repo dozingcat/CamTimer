@@ -17,6 +17,8 @@ import com.dozingcatsoftware.cameratimer.AboutActivity;
 import com.dozingcatsoftware.util.ARManager;
 import com.dozingcatsoftware.util.AndroidUtils;
 import com.dozingcatsoftware.util.CameraUtils;
+import com.dozingcatsoftware.util.ShutterButton;
+import com.dozingcatsoftware.util.ShutterButton.OnShutterButtonListener;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -28,6 +30,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
@@ -38,7 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.hardware.Camera;
 
-public class MainActivity extends Activity implements Camera.PictureCallback, Camera.AutoFocusCallback {
+public class MainActivity extends Activity implements Camera.PictureCallback, Camera.AutoFocusCallback, OnShutterButtonListener {
 	
 	static final List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30);
 	static final int DEFAULT_DELAY = 5;
@@ -55,7 +58,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 	SurfaceView cameraView;
 	int[] maxCameraViewSize;
 	
-	ImageButton takePictureButton;
+	ShutterButton shutterButton;
 	Button pictureDelayButton;
 	Button cancelPictureButton;
 	Button switchCameraButton;
@@ -103,7 +106,8 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	arManager.setCameraOpenedCallback(new Runnable() {public void run() {cameraOpened();}});
     	arManager.setCameraStartedCallback(new Runnable() {public void run() {cameraPreviewStarted();}});
     	
-    	takePictureButton = (ImageButton)findViewById(R.id.takePictureButton);
+    	shutterButton = (ShutterButton)findViewById(R.id.shutterButton);
+    	shutterButton.setOnShutterButtonListener(this);
     	pictureDelayButton = (Button)findViewById(R.id.pictureDelayButton);
     	
     	cancelPictureButton = (Button)findViewById(R.id.cancelPictureButton);
@@ -116,7 +120,6 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     	
     	statusTextField = (TextView)findViewById(R.id.statusText);
     	
-    	AndroidUtils.bindOnClickListener(this, takePictureButton, "savePicture");
     	AndroidUtils.bindOnClickListener(this, pictureDelayButton, "cycleDelay");
     	AndroidUtils.bindOnClickListener(this, cancelPictureButton, "cancelSavePicture");
     	AndroidUtils.bindOnClickListener(this, switchCameraButton, "switchCamera");
@@ -142,6 +145,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     public void onResume() {
     	super.onResume();
     	arManager.startCameraIfVisible();
+    	AndroidUtils.setSystemUiLowProfile(cameraView);
     }
     
     // callback from ARManager
@@ -169,7 +173,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     void updateButtons(boolean allowSave) {
     	this.findViewById(R.id.miscButtonBar).setVisibility(allowSave ? View.VISIBLE : View.GONE);
     	this.findViewById(R.id.optionsButtonBar).setVisibility(allowSave ? View.VISIBLE : View.GONE);
-    	takePictureButton.setVisibility(allowSave ? View.VISIBLE : View.GONE);
+    	shutterButton.setVisibility(allowSave ? View.VISIBLE : View.GONE);
 		cancelPictureButton.setVisibility(allowSave ? View.GONE : View.VISIBLE);
     }
     
@@ -408,4 +412,14 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 		startActivity(LibraryActivity.intentWithImageDirectory(this, savedImageDirectory));
 	}
 	
+    @Override
+    public void onShutterButtonFocus(boolean pressed) {
+        shutterButton.setImageResource(pressed ? R.drawable.btn_camera_shutter_pressed_holo : 
+                                                 R.drawable.btn_camera_shutter_holo);
+    }
+
+    @Override
+    public void onShutterButtonClick() {
+        savePicture();
+    }
 }

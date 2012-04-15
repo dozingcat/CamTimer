@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dozingcatsoftware.util.AsyncImageLoader;
+import com.dozingcatsoftware.util.ScaledBitmapCache;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +39,7 @@ public class LibraryActivity extends Activity {
 	
 	// A cache of scaled Bitmaps for the image files, so we can avoid reloading them as the user scrolls.
 	ScaledBitmapCache bitmapCache;
+	AsyncImageLoader imageLoader = new AsyncImageLoader();
 	
 	public static Intent intentWithImageDirectory(Context parent, String imageDirectory) {
 		Intent intent = new Intent(parent, LibraryActivity.class);
@@ -91,8 +95,7 @@ public class LibraryActivity extends Activity {
 		adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
 			public boolean setViewValue(View view, Object data, String textRepresentation) {
 				Uri imageUri = (Uri)data;
-				Bitmap bitmap = bitmapCache.getScaledBitmap(imageUri, CELL_WIDTH, CELL_HEIGHT);
-				((ImageView)view).setImageBitmap(bitmap);
+				imageLoader.loadImageIntoViewAsync(bitmapCache, imageUri, (ImageView)view, CELL_WIDTH, CELL_HEIGHT, getResources());
 				return true;
 			}
 		});
