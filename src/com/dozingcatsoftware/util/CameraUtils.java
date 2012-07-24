@@ -126,7 +126,7 @@ public class CameraUtils {
 	 * always opens the primary camera.
 	 */
 	public static Camera openCamera(int cameraId) {
-		if (cameraId>0) {
+		if (cameraId>=0) {
 			Method openMethod = null;
 			try {
 				openMethod = Camera.class.getMethod("open", int.class);
