@@ -21,6 +21,7 @@ import com.dozingcatsoftware.util.ShutterButton;
 import com.dozingcatsoftware.util.ShutterButton.OnShutterButtonListener;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -29,6 +30,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
@@ -371,6 +373,15 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
 						camera.autoFocus(MainActivity.this);
 					}
 				}, 100);
+			}
+			// send the same NEW_PICTURE broadcast that the standard camera app does
+			try {
+			    Intent newPictureIntent = new Intent("android.hardware.action.NEW_PICTURE");
+			    newPictureIntent.setDataAndType(pictureURI, "image/jpeg");
+			    this.sendBroadcast(newPictureIntent);
+			}
+			catch(Exception ex) {
+			    Log.e("CamTimer", "Error broadcasting new picture", ex);
 			}
 		}
 	}
