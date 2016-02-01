@@ -45,7 +45,7 @@ import android.hardware.Camera;
 
 public class MainActivity extends Activity implements Camera.PictureCallback, Camera.AutoFocusCallback, OnShutterButtonListener {
 	
-	static final List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30);
+	static final List<Integer> DELAY_DURATIONS = Arrays.asList(0, 5, 15, 30, 60, 120, 300, 600);
 	static final int DEFAULT_DELAY = 5;
 	static final String DELAY_PREFERENCES_KEY = "delay";
 	int pictureDelay = DEFAULT_DELAY;
@@ -335,7 +335,7 @@ public class MainActivity extends Activity implements Camera.PictureCallback, Ca
     }
     
     public void toggleNumberOfPictures() {
-    	picturesToTake = (picturesToTake==1) ? 4 : 1;
+    	picturesToTake = (picturesToTake==1) ? 100 : 1;
     	numberOfPicturesButton.setText(picturesToTake==1 ? R.string.singleImageButtonLabel : R.string.multiImageButtonLabel);
     }
     
