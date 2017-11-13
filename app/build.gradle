@@ -1,0 +1,23 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 14
+    buildToolsVersion "26.0.2"
+
+    defaultConfig {
+        applicationId "com.dozingcatsoftware.cameratimer"
+        minSdkVersion 8
+        targetSdkVersion 14
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile files('libs/android-support-v4.jar')
+}
