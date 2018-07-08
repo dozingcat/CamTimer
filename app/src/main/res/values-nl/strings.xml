@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CamTimer</string>
+	<string name="deleteImageButtonLabel">Foto verwijderen</string>
+	<string name="shareImageButtonLabel">Foto delen</string>
+	<string name="exitViewImageButtonLabel">Terug</string>
+	
+	<string name="gridDeleteButtonLabel">Verwijderen</string>
+	<string name="gridViewButtonLabel">Bekijken</string>
+	
+	<string name="helpButtonLabel">Hulp</string>
+	<string name="libraryButtonLabel">Bibliotheek</string>
+	<string name="singleImageButtonLabel">1 foto</string>
+	<string name="multiImageButtonLabel">4 foto\'s</string>
+	<string name="switchCameraButtonLabel">Andere camera</string>
+	<string name="cancelPictureButtonLabel">Annuleren</string>
+	
+	<string name="delayButtonLabelSecondsFormat">Vertraging: %d sec</string>
+	<string name="delayButtonLabelNone">Vertraging: geen</string>
+	<string name="defaultDelayButtonLabel">Vertraging: 5 sec</string>
+	
+	<string name="flashButtonDefaultLabel">Flits</string>
+	<string name="flashButtonOnLabel">Flits: aan</string>
+	<string name="flashButtonOffLabel">Flits: uit</string>
+	<string name="flashButtonAutoLabel">Flits: automatisch</string>
+	
+	<string name="canceledPictureMessage">Foto maken geannuleerd</string>
+	<string name="timerCountdownMessageFormat">Foto wordt gemaakt over %d seconden</string>
+	<string name="savedPictureMessage">Foto opgeslagen</string>
+			
+	<string name="noImagesFound">Je hebt nog geen foto's gemaakt.</string>
+	
+	<string name="about_text">CamTimer 1.2.3\n© 2011-2015 Brian Nenninger\nFeedback en bugs rapporteren: bnenning@gmail.com\n\nDruk op de ontspanknop linksboven om een foto te maken. Als er een vertraging is ingesteld, dan worden,3 seconden voor het maken van de foto, pieptonen afgespeeld.\n\nDe knoppen rechts laten je de camera-opties als volgt instellen:\nVertraging: schakelt tussen vertragingen van 5, 15 en 30 seconden, en geen vertraging.\n1 foto/4 foto's: schakelt tussen het nemen van één foto of 4 foto's achter elkaar.\nFlits: schakelt tussen automatische flits en flits aan en uit. Alleen beschikbaar op Android 2.1 en hoger.\nAndere camera: schakelt tussen de camera's aan de voor- en achterzijde. Alleen beschikbaar op apparaten met meerdere camera's en Android 2.3 of hoger.\n\nNa het maken van een foto worden er opties getoond voor het verwijderen of delen (via e-mail/Facebook/Google+, etc.) van de foto en voor het terugkeren naar het hoofdscherm. Na het maken van 4 foto's worden de foto's in een raster getoond en kun je individuele foto's bekijken en verwijderen.\n\nDe bibliotheekknop links toont een lijst van alle foto's die je gemaakt hebt met CamTimer. Selecteer één van de foto's om hem volledig te bekijken en te verwijderen of delen. De foto's worden opgeslagen op je SD-kaart in de CamTimer-map.</string>
+	
+</resources>
